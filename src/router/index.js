@@ -10,6 +10,11 @@ const routes = [
     component: () => import("@/views/login"),
   },
   {
+    path: "/search",
+    name: "search",
+    component: () => import("@/views/search"),
+  },
+  {
     path: "/",
     // name: "layout", // 如果有默认子路由，name属性没有意义
     component: () => import("@/views/layout"),

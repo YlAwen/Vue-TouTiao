@@ -9,6 +9,7 @@
         size="small"
         round
         icon="search"
+        to="/search"
         >搜索</van-button
       >
     </van-nav-bar>
@@ -23,37 +24,88 @@
         <ArticleList :channel="channel" />
       </van-tab>
       <div slot="nav-right" class="placeholder"></div>
-      <div slot="nav-right" class="hamburger-btn">
+      <div
+        slot="nav-right"
+        class="hamburger-btn"
+        @click="isChennelEditShow = true"
+      >
         <i class="iconfont icon-gengduo"></i>
       </div>
     </van-tabs>
+    <!-- 频道编辑弹出层 -->
+    <van-popup
+      v-model="isChennelEditShow"
+      closeable
+      position="bottom"
+      :style="{ height: '100%' }"
+      close-icon-position="top-left"
+      ><ChannelEdit
+        @update-active="onUpdateActive"
+        :channels="channels"
+        :active="active"
+      ></ChannelEdit
+    ></van-popup>
   </div>
 </template>
 <script>
 import ArticleList from "./components/article-list.vue";
+import ChannelEdit from "./components/channel-edit";
+import { mapState } from "vuex";
 export default {
   name: "HomeIndex",
-  components: { ArticleList },
+  components: { ArticleList, ChannelEdit },
   props: {},
   data() {
     return {
       active: 0,
-      channels: {},
+      channels: [],
+      isChennelEditShow: false,
     };
   },
-  computed: {},
+  computed: {
+    ...mapState(["user"]),
+  },
   watch: {},
-  methods: {},
+  methods: {
+    onUpdateActive(index, isShow) {
+      this.active = index;
+      this.isChennelEditShow = isShow;
+    },
+  },
   created() {
-    this.axios
-      .get("/v1_0/user/channels")
-      .then((res) => {
-        // console.log(res.data.data.channels);
-        this.channels = res.data.data.channels;
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    let channels = [];
+    if (this.user) {
+      // 已登录，获取用户频道列表
+      this.axios
+        .get("/v1_0/user/channels")
+        .then((res) => {
+          // console.log(res.data.data.channels);
+          channels = res.data.data.channels;
+          this.channels = channels;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    } else {
+      // 未登录，获取本地列表数据
+      let localChannels = JSON.parse(localStorage.getItem("TOUTIAO_CHANNELS"));
+      if (localChannels) {
+        // 如果有数据
+        this.channels = localChannels;
+      } else {
+        // 如果没有数据
+        this.axios
+          .get("/v1_0/user/channels")
+          .then((res) => {
+            // console.log(res.data.data.channels);
+            channels = res.data.data.channels;
+            this.channels = channels;
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      }
+    }
   },
   mounted() {},
 };
@@ -104,7 +156,7 @@ export default {
       margin-bottom: 4px;
     }
     .placeholder {
-      width: 33px;
+      width: 25px;
       height: 41px;
       flex-shrink: 0;
     }
