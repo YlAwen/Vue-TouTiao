@@ -1,24 +1,2 @@
-# toutiao_m
-
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+# [项目展示地址](https://ylawen.github.io/#/./%E5%89%8D%E7%AB%AF/Project/IT%E5%A4%B4%E6%9D%A1/%E7%AC%94%E8%AE%B0/IT%E5%A4%B4%E6%9D%A1)
+# [笔记展示地址](https://ylawen.github.io/#/./%E5%89%8D%E7%AB%AF/Project/IT%E5%A4%B4%E6%9D%A1/%E7%AC%94%E8%AE%B0/IT%E5%A4%B4%E6%9D%A1)
