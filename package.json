@@ -13,6 +13,7 @@
     "core-js": "^3.6.5",
     "dayjs": "^1.10.7",
     "lib-flexible": "^0.3.2",
+    "lodash": "^4.17.21",
     "postcss-plugin-px2rem": "^0.8.1",
     "vant": "^2.12.33",
     "vue": "^2.6.11",
