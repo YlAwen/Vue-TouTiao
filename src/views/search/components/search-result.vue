@@ -46,10 +46,10 @@ export default {
           `/v1_0/search?page=${this.page}&per_page=${this.perPage}&q=${this.searchText}`
         )
         .then((res) => {
-          console.log(res.data.data.results);
+          // console.log(res.data.data.results);
           this.list.push(...res.data.data.results);
           this.loading = false;
-          if (res.data.data.results) {
+          if (res.data.data.results.length) {
             this.page++;
           } else {
             this.finished = true;

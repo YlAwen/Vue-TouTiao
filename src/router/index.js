@@ -15,6 +15,12 @@ const routes = [
     component: () => import("@/views/search"),
   },
   {
+    path: "/article/:articleId",
+    name: "article",
+    component: () => import("@/views/article"),
+    props: true,
+  },
+  {
     path: "/",
     // name: "layout", // 如果有默认子路由，name属性没有意义
     component: () => import("@/views/layout"),
