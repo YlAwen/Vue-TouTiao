@@ -4,44 +4,86 @@
     :finished="finished"
     finished-text="没有更多了"
     @load="onLoad"
+    :error="error"
+    error-text="加载失败，请点击重试"
   >
-    <van-cell v-for="item in list" :key="item" :title="item" />
+    <CommentItem :comment="item" v-for="(item, index) in list" :key="index" />
   </van-list>
 </template>
 <script>
+import CommentItem from "./comment-item";
 export default {
   name: "CommentList",
-  components: {},
-  props: {},
+  components: { CommentItem },
+  props: {
+    source: {
+      type: [Number, String, Object],
+      required: true,
+    },
+    list: {
+      type: Array,
+      default: () => [],
+    },
+  },
   data() {
     return {
-      list: [],
+      // list: [],
       loading: false,
       finished: false,
+      offset: null,
+      limit: 10,
+      error: false,
     };
   },
   computed: {},
   watch: {},
   methods: {
-    onLoad() {
-      // 异步更新数据
-      // setTimeout 仅做示例，真实场景中一般为 ajax 请求
-      setTimeout(() => {
-        for (let i = 0; i < 10; i++) {
-          this.list.push(this.list.length + 1);
+    async onLoad() {
+      try {
+        // 1. 请求获取数据
+        if (this.offset === null) {
+          const response = await this.axios.get(
+            `/v1_0/comments?type=${"a"}&source=${this.source}&limit=${
+              this.limit
+            }`
+          );
+          let results = response.data.data.results;
+          // console.log(response);
+          this.list.push(...results);
+          this.loading = false;
+          this.$emit("onload-success", response.data.data);
+          if (results.length) {
+            this.offset = response.data.data.last_id;
+          } else {
+            this.finished = true;
+          }
+        } else {
+          const response = await this.axios.get(
+            `/v1_0/comments?type=${"a"}&source=${this.source}&limit=${
+              this.limit
+            }&offset=${this.offset}`
+          );
+          let results = response.data.data.results;
+          // console.log(response);
+          this.list.push(...results);
+          this.loading = false;
+          this.$emit("onload-success", response.data.data);
+          if (results.length) {
+            this.offset = response.data.data.last_id;
+          } else {
+            this.finished = true;
+          }
         }
-
-        // 加载状态结束
+      } catch (error) {
+        this.error = true;
         this.loading = false;
-
-        // 数据全部加载完成
-        if (this.list.length >= 40) {
-          this.finished = true;
-        }
-      }, 1000);
+        console.log(error);
+      }
     },
   },
-  created() {},
+  created() {
+    this.onLoad();
+  },
   mounted() {},
 };
 </script>

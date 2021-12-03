@@ -73,14 +73,23 @@
         ></div>
         <van-divider>正文结束</van-divider>
         <!-- 文章评论列表 -->
-        <CommentList />
+        <CommentList
+          :list="commentList"
+          :source="article.art_id"
+          @onload-success="totalCount = $event.total_count"
+        />
         <!-- 文章评论列表 -->
         <!-- 底部区域 -->
         <div class="article-bottom">
-          <van-button class="comment-btn" type="default" round size="small"
+          <van-button
+            @click="isPostCommentShow = true"
+            class="comment-btn"
+            type="default"
+            round
+            size="small"
             >写评论</van-button
           >
-          <van-icon name="comment-o" info="123" color="#777" />
+          <van-icon name="comment-o" :info="totalCount" color="#777" />
           <!-- <van-icon color="#777" name="star-o" /> -->
           <CollectArticle
             :articleId="article.art_id"
@@ -89,7 +98,14 @@
           <LikeArticle v-model="article.attitude" :articleId="article.art_id" />
           <van-icon name="share" color="#777777"></van-icon>
         </div>
+
         <!-- /底部区域 -->
+
+        <!-- 发布评论 -->
+        <van-popup position="bottom" v-model="isPostCommentShow"
+          ><CommentPost :target="article.art_id" @post-success="onPostSuccess"
+        /></van-popup>
+        <!-- 发布评论 -->
       </div>
       <!-- /加载完成-文章详情 -->
 
@@ -108,6 +124,11 @@
       </div>
       <!-- /加载失败：其它未知错误（例如网络原因或服务端异常） -->
     </div>
+    <!-- 评论回复 -->
+    <van-popup v-model="isReplyShow" position="bottom" style="height: 100%"
+      >内容</van-popup
+    >
+    <!-- 评论回复 -->
   </div>
 </template>
 
@@ -116,11 +137,18 @@ import FollowUser from "../../components/follow-user/index";
 import CollectArticle from "../../components/collect-article/index";
 import LikeArticle from "../../components/like-article/index";
 import CommentList from "./components/comment-list";
+import CommentPost from "./components/comment-post";
 import dayjs from "dayjs";
 import { ImagePreview } from "vant";
 export default {
   name: "ArticleIndex",
-  components: { FollowUser, CollectArticle, LikeArticle, CommentList },
+  components: {
+    FollowUser,
+    CollectArticle,
+    LikeArticle,
+    CommentList,
+    CommentPost,
+  },
   props: {
     articleId: {
       type: [Number, String],
@@ -133,6 +161,10 @@ export default {
       loading: false,
       errStatus: 0,
       followLoading: false,
+      isReplyShow: false,
+      totalCount: 0,
+      isPostCommentShow: false,
+      commentList: [],
     };
   },
   computed: {},
@@ -206,6 +238,10 @@ export default {
         }
       }
       this.followLoading = false;
+    },
+    onPostSuccess(data) {
+      this.isPostCommentShow = false;
+      this.commentList.unshift(data.new_obj);
     },
   },
   filters: {

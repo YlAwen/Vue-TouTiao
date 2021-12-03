@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <h1>没有设计图，没有接口</h1>
-    </div>
+  <div>没有设计图，没有接口</div>
 </template>
 <script>
 export default {

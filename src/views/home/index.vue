@@ -111,6 +111,9 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+/deep/.van-tabs__nav--line.van-tabs__nav--complete {
+  padding-left: 0;
+}
 .home-container {
   padding-top: 87px;
   padding-bottom: 50px;

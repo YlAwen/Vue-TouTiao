@@ -32,7 +32,9 @@ axios.interceptors.request.use(
     return Promise.reject(error);
   }
 );
-
+Vue.filter("relativeTime", (value) => {
+  return dayjs().to(dayjs(value));
+});
 // 注册使用 Vant 组件库
 Vue.use(Vant);
 Vue.config.productionTip = false;

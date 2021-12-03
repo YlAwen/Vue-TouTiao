@@ -97,7 +97,8 @@ export default {
           this.userInfo = res.data.data;
         })
         .catch((err) => {
-          this.$toast("获取数据失败，请稍后重试");
+          this.$store.state.user = null;
+          this.$toast("验证信息过期，请重新登录");
         });
     }
   },
