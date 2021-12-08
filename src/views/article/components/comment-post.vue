@@ -20,6 +20,12 @@
 export default {
   name: "CommentPost",
   components: {},
+  inject: {
+    articleId: {
+      type: [Number, String, Object],
+      default: null,
+    },
+  },
   props: {
     target: {
       type: [Number, String, Object],
@@ -46,7 +52,7 @@ export default {
         const res = await this.axios.post("/v1_0/comments", {
           target: this.target,
           content: this.message,
-          art_id: null,
+          art_id: this.articleId ? this.articleId.toString() : null,
         });
         console.log(res.data.data);
         // 发布成功后 1.关闭弹出层 2.将内容显示到列表顶部 3.清空文本框

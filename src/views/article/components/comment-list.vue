@@ -6,8 +6,14 @@
     @load="onLoad"
     :error="error"
     error-text="加载失败，请点击重试"
+    :immediate-check="false"
   >
-    <CommentItem :comment="item" v-for="(item, index) in list" :key="index" />
+    <CommentItem
+      :comment="item"
+      v-for="(item, index) in list"
+      :key="index"
+      @replay-click="$emit('replay-click', $event)"
+    />
   </van-list>
 </template>
 <script>
@@ -23,6 +29,13 @@ export default {
     list: {
       type: Array,
       default: () => [],
+    },
+    type: {
+      type: String,
+      default: "a",
+      validator(val) {
+        return ["a", "c"].includes(val);
+      },
     },
   },
   data() {
@@ -43,9 +56,7 @@ export default {
         // 1. 请求获取数据
         if (this.offset === null) {
           const response = await this.axios.get(
-            `/v1_0/comments?type=${"a"}&source=${this.source}&limit=${
-              this.limit
-            }`
+            `/v1_0/comments?type=${this.type}&source=${this.source}&limit=${this.limit}`
           );
           let results = response.data.data.results;
           // console.log(response);
@@ -59,9 +70,7 @@ export default {
           }
         } else {
           const response = await this.axios.get(
-            `/v1_0/comments?type=${"a"}&source=${this.source}&limit=${
-              this.limit
-            }&offset=${this.offset}`
+            `/v1_0/comments?type=${this.type}&source=${this.source}&limit=${this.limit}&offset=${this.offset}`
           );
           let results = response.data.data.results;
           // console.log(response);
@@ -82,6 +91,7 @@ export default {
     },
   },
   created() {
+    this.loading = true;
     this.onLoad();
   },
   mounted() {},

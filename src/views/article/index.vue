@@ -77,6 +77,7 @@
           :list="commentList"
           :source="article.art_id"
           @onload-success="totalCount = $event.total_count"
+          @replay-click="onReplyClick"
         />
         <!-- 文章评论列表 -->
         <!-- 底部区域 -->
@@ -126,8 +127,11 @@
     </div>
     <!-- 评论回复 -->
     <van-popup v-model="isReplyShow" position="bottom" style="height: 100%"
-      >内容</van-popup
-    >
+      ><CommentReply
+        v-if="isReplyShow"
+        :comment="currentComment"
+        @close="isReplyShow = false"
+    /></van-popup>
     <!-- 评论回复 -->
   </div>
 </template>
@@ -138,7 +142,7 @@ import CollectArticle from "../../components/collect-article/index";
 import LikeArticle from "../../components/like-article/index";
 import CommentList from "./components/comment-list";
 import CommentPost from "./components/comment-post";
-import dayjs from "dayjs";
+import CommentReply from "./components/comment-replay.vue";
 import { ImagePreview } from "vant";
 export default {
   name: "ArticleIndex",
@@ -148,6 +152,13 @@ export default {
     LikeArticle,
     CommentList,
     CommentPost,
+    CommentReply,
+  },
+  // 给所有的后代组件提供数据
+  provide: function () {
+    return {
+      articleId: this.articleId,
+    };
   },
   props: {
     articleId: {
@@ -165,6 +176,7 @@ export default {
       totalCount: 0,
       isPostCommentShow: false,
       commentList: [],
+      currentComment: {},
     };
   },
   computed: {},
@@ -243,16 +255,18 @@ export default {
       this.isPostCommentShow = false;
       this.commentList.unshift(data.new_obj);
     },
-  },
-  filters: {
-    relativeTime(value) {
-      return dayjs().to(dayjs(value));
+    onReplyClick(comment) {
+      this.currentComment = comment;
+      console.log(comment);
+      this.isReplyShow = true;
     },
   },
+  filters: {},
 };
 </script>
 <style scoped lang="less">
 @import "./github-markdown.css";
+
 .article-container {
   .main-wrap {
     position: fixed;
