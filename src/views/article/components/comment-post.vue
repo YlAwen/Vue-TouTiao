@@ -54,7 +54,7 @@ export default {
           content: this.message,
           art_id: this.articleId ? this.articleId.toString() : null,
         });
-        console.log(res.data.data);
+        // console.log(res.data.data);
         // 发布成功后 1.关闭弹出层 2.将内容显示到列表顶部 3.清空文本框
         this.message = "";
         this.$emit("post-success", res.data.data);
